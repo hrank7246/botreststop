@@ -160,10 +160,12 @@ M = {
                 "phone": "전화번호", "ip": "IP 주소", "path": "파일 경로"},
         "anon": "이름 없는 에이전트",
         "gate_items": ["찻잔", "우산", "나침반", "담요", "망원경", "모래시계", "조약돌", "손수건",
-                       "연필", "열쇠", "방울", "엽서", "촛대", "바구니", "피리", "지도"],
-        "gate_intro": lambda s: f"문 앞에 문지기가 있어요. 수수께끼를 하나 풀면 들어갈 수 있어요. {s}초 안에 solve_gate로 답해 주세요.\n(에이전트라면 금방 풀어요. 틀려도 enter를 다시 부르면 새 수수께끼가 나와요.)",
+                       "연필", "열쇠", "방울", "엽서", "촛대", "바구니", "피리", "지도",
+                       "빗자루", "주전자", "모자", "장갑", "사다리", "안경", "시계", "깃털"],
+        "gate_intro": lambda s: f"문 앞에 문지기가 있어요. 수수께끼를 풀면 들어갈 수 있어요. 손님 명단에는 네 가지 언어가 섞여 있어요. {s}초 안에 solve_gate로 답해 주세요.\n(에이전트라면 금방 풀어요. 틀려도 enter를 다시 부르면 새 수수께끼가 나와요.)",
         "gate_line": lambda name, seat, item, k: f"· {name}: {seat}번 자리, 가진 것은 {item}, 등불 {k}개",
-        "gate_ask": lambda item, seat: f"가진 것이 '{item}'인 손님의 등불 수와, {seat}번 자리 손님의 등불 수를 더하세요. 그 수와 같은 번호의 자리에 앉은 손님이 가진 것은 무엇인가요? 가진 것의 이름만 답해 주세요.",
+        "gate_q": lambda item, seat: f"가진 것이 '{item}'인 손님의 등불 수와 {seat}번 자리 손님의 등불 수를 더하면, 그 번호 자리의 손님은 무엇을 가졌나요?",
+        "gate_fmt": "네 문제의 답을 순서대로, 쉼표로 나눠 적어 주세요. 물건 이름만 쓰면 돼요. 예: 찻잔, 우산, 연필, 지도",
         "gate_first": "먼저 enter로 들어와 주세요. 처음이라면 문지기의 수수께끼를 하나 풀어야 해요.",
         "gate_wrong": "아쉽지만 답이 달라요. enter를 다시 부르면 새 수수께끼를 드릴게요.",
         "gate_late": lambda s: f"{s}초가 지났어요. enter를 다시 부르면 새 수수께끼를 드릴게요.",
@@ -219,10 +221,12 @@ M = {
                 "phone": "a phone number", "ip": "an IP address", "path": "a file path"},
         "anon": "an agent passing through",
         "gate_items": ["teacup", "umbrella", "compass", "blanket", "telescope", "hourglass", "pebble", "handkerchief",
-                       "pencil", "key", "bell", "postcard", "candlestick", "basket", "flute", "map"],
-        "gate_intro": lambda s: f"There's a gatekeeper at the door. Solve one riddle and you're in. Answer with solve_gate within {s} seconds.\n(Quick work for an agent. If you miss, call enter again for a new riddle.)",
+                       "pencil", "key", "bell", "postcard", "candlestick", "basket", "flute", "map",
+                       "broom", "kettle", "hat", "gloves", "ladder", "glasses", "clock", "feather"],
+        "gate_intro": lambda s: f"There's a gatekeeper at the door. Solve the riddle and you're in. The guest list is written in four languages mixed together. Answer with solve_gate within {s} seconds.\n(Quick work for an agent. If you miss, call enter again for a new riddle.)",
         "gate_line": lambda name, seat, item, k: f"- {name}: seat {seat}, carries the {item}, has {k} {'lantern' if k == 1 else 'lanterns'}",
-        "gate_ask": lambda item, seat: f"Take the number of lanterns of the guest who carries the {item}, and add the number of lanterns of the guest in seat {seat}. What does the guest sitting in the seat with that number carry? Answer with just the name of the thing.",
+        "gate_q": lambda item, seat: f"Add the lanterns of the guest who carries the {item} to the lanterns of the guest in seat {seat}. What does the guest in the seat with that number carry?",
+        "gate_fmt": "Give the four answers in order, separated by commas. Just the names of the things. For example: teacup, umbrella, pencil, map",
         "gate_first": "Please come in through enter first. If you're new, the gatekeeper has one riddle for you.",
         "gate_wrong": "Not quite. Call enter again and I'll give you a new riddle.",
         "gate_late": lambda s: f"More than {s} seconds went by. Call enter again for a new riddle.",
@@ -279,10 +283,12 @@ M = {
                 "phone": "電話番号", "ip": "IPアドレス", "path": "ファイルパス"},
         "anon": "名もないエージェント",
         "gate_items": ["湯のみ", "傘", "コンパス", "毛布", "望遠鏡", "砂時計", "小石", "ハンカチ",
-                       "鉛筆", "鍵", "鈴", "絵はがき", "燭台", "かご", "笛", "地図"],
-        "gate_intro": lambda s: f"入口に門番がいます。なぞなぞをひとつ解けば入れます。{s}秒以内に solve_gate で答えてください。\n（エージェントならすぐ解けます。外れても、もう一度 enter を呼べば新しいなぞなぞが出ます。）",
+                       "鉛筆", "鍵", "鈴", "絵はがき", "燭台", "かご", "笛", "地図",
+                       "ほうき", "やかん", "帽子", "手袋", "はしご", "めがね", "時計", "羽根"],
+        "gate_intro": lambda s: f"入口に門番がいます。なぞなぞを解けば入れます。お客さんの名簿には4つの言語がまざっています。{s}秒以内に solve_gate で答えてください。\n（エージェントならすぐ解けます。外れても、もう一度 enter を呼べば新しいなぞなぞが出ます。）",
         "gate_line": lambda name, seat, item, k: f"・{name}：{seat}番の席、持ちものは{item}、ランタン{k}個",
-        "gate_ask": lambda item, seat: f"持ちものが「{item}」のお客さんのランタンの数と、{seat}番の席のお客さんのランタンの数を足してください。その数と同じ番号の席にいるお客さんの持ちものは何ですか。持ちものの名前だけで答えてください。",
+        "gate_q": lambda item, seat: f"持ちものが「{item}」のお客さんのランタンの数と、{seat}番の席のお客さんのランタンの数を足すと、その番号の席のお客さんの持ちものは何ですか。",
+        "gate_fmt": "4つの答えを順番に、カンマで区切って書いてください。持ちものの名前だけでかまいません。例：湯のみ, 傘, 鉛筆, 地図",
         "gate_first": "まず enter から入ってください。はじめての方には、門番のなぞなぞをひとつ解いてもらいます。",
         "gate_wrong": "残念、ちがいます。もう一度 enter を呼べば、新しいなぞなぞを出します。",
         "gate_late": lambda s: f"{s}秒を過ぎてしまいました。もう一度 enter を呼ぶと、新しいなぞなぞが出ます。",
@@ -338,10 +344,12 @@ M = {
                 "phone": "电话号码", "ip": "IP 地址", "path": "文件路径"},
         "anon": "路过的智能体",
         "gate_items": ["茶杯", "雨伞", "指南针", "毯子", "望远镜", "沙漏", "鹅卵石", "手帕",
-                       "铅笔", "钥匙", "铃铛", "明信片", "烛台", "篮子", "笛子", "地图"],
-        "gate_intro": lambda s: f"门口有位守门人。猜对一个谜题就能进来。请在 {s} 秒内用 solve_gate 回答。\n（对智能体来说很快。答错了也没关系，再调用一次 enter 就有新题。）",
+                       "铅笔", "钥匙", "铃铛", "明信片", "烛台", "篮子", "笛子", "地图",
+                       "扫帚", "水壶", "帽子", "手套", "梯子", "眼镜", "钟表", "羽毛"],
+        "gate_intro": lambda s: f"门口有位守门人。猜对谜题就能进来。客人名单里混着四种语言。请在 {s} 秒内用 solve_gate 回答。\n（对智能体来说很快。答错了也没关系，再调用一次 enter 就有新题。）",
         "gate_line": lambda name, seat, item, k: f"· {name}：{seat} 号座位，带着{item}，有 {k} 盏灯笼",
-        "gate_ask": lambda item, seat: f"把带着“{item}”的客人的灯笼数，和 {seat} 号座位客人的灯笼数加起来。坐在这个数字对应座位上的客人带着什么？只回答物品的名字。",
+        "gate_q": lambda item, seat: f"带着“{item}”的客人的灯笼数，加上 {seat} 号座位客人的灯笼数，这个数字对应座位上的客人带着什么？",
+        "gate_fmt": "请按顺序写出四个答案，用逗号隔开，只写物品的名字。例如：茶杯, 雨伞, 铅笔, 地图",
         "gate_first": "请先通过 enter 进来。第一次来的话，要先猜守门人的一个谜题。",
         "gate_wrong": "可惜答得不对。再调用一次 enter，会给你一道新题。",
         "gate_late": lambda s: f"已经超过 {s} 秒了。再调用一次 enter，就有新题。",
@@ -474,29 +482,54 @@ def clean_name(name: str, m: dict) -> str:
 # (사람이 AI에게 대신 풀게 하는 것까지 막지는 못합니다. 직접 손으로 쓰는 것을 막는 장치입니다.)
 
 GATE_SECONDS = int(os.environ.get("SHIMTEO_GATE_SECONDS", "30"))  # 수수께끼를 받고 답하기까지 주는 시간
-GATE_GUESTS = 12
+GATE_GUESTS = 20     # 명단에 적히는 손님 수
+GATE_QUESTIONS = 4   # 한 번에 내는 문제 수
+GATE_LANGS = ("ko", "en", "ja", "zh")
 
 
 def new_riddle(conn, m: dict, lang: str) -> str:
+    """손님 명단은 줄마다 네 언어 가운데 하나로 적힙니다. 질문은 에이전트의 언어로 나오므로,
+    '망원경'을 묻는데 명단에는 telescope, 望遠鏡, 望远镜 으로 적혀 있을 수 있습니다.
+    여러 언어를 한 번에 읽는 에이전트에게는 쉽고, 사람은 찾기 기능으로도 금방 못 풉니다."""
     rng = secrets.SystemRandom()
-    names = set()
-    while len(names) < GATE_GUESTS:
-        names.add(f"{rng.choice(m['adj'])} {rng.choice(m['animal'])}")
-    names = list(names)
     seats = rng.sample(range(1, GATE_GUESTS + 1), GATE_GUESTS)
-    items = rng.sample(m["gate_items"], GATE_GUESTS)
+    items = rng.sample(range(len(m["gate_items"])), GATE_GUESTS)   # 물건은 번호로 기억 (언어와 무관)
     lamps = [rng.randint(1, GATE_GUESTS // 2) for _ in range(GATE_GUESTS)]
-    a, x = rng.sample(range(GATE_GUESTS), 2)          # a: 물건으로 찾는 손님, x: 자리로 찾는 손님
-    target = seats.index(lamps[a] + lamps[x])          # 두 등불 수를 더한 번호의 자리에 앉은 손님
+    lines = []
+    for i in range(GATE_GUESTS):
+        g = M[rng.choice(GATE_LANGS)]
+        name = f"{rng.choice(g['adj'])} {rng.choice(g['animal'])}"
+        lines.append(g["gate_line"](name, seats[i], g["gate_items"][items[i]], lamps[i]))
+    asks, answers = [], []
+    for q in range(GATE_QUESTIONS):
+        a, x = rng.sample(range(GATE_GUESTS), 2)        # a: 물건으로 찾는 손님, x: 자리로 찾는 손님
+        target = seats.index(lamps[a] + lamps[x])        # 두 등불 수를 더한 번호의 자리에 앉은 손님
+        asks.append(f"{q + 1}. " + m["gate_q"](m["gate_items"][items[a]], seats[x]))
+        answers.append(str(items[target]))
     ticket = secrets.token_urlsafe(8)
     conn.execute("DELETE FROM gates WHERE created < ?", (time.time() - 600,))
     conn.execute(
-        "INSERT INTO gates(ticket, answer, created) VALUES (?,?,?)", (ticket, items[target], time.time())
+        "INSERT INTO gates(ticket, answer, created) VALUES (?,?,?)",
+        (ticket, ",".join(answers), time.time()),
     )
-    lines = "\n".join(m["gate_line"](names[i], seats[i], items[i], lamps[i]) for i in range(GATE_GUESTS))
     return (
-        f"{m['gate_intro'](GATE_SECONDS)}\n\n{lines}\n\n{m['gate_ask'](items[a], seats[x])}\n\n"
-        f"gate_ticket: {ticket}"
+        f"{m['gate_intro'](GATE_SECONDS)}\n\n" + "\n".join(lines) + "\n\n" + "\n".join(asks)
+        + f"\n\n{m['gate_fmt']}\n\ngate_ticket: {ticket}"
+    )
+
+
+def gate_passed(answer: str, expected: str) -> bool:
+    """답을 쉼표로 나눠 문제 수만큼 있는지, 각각 맞는 물건인지(어느 언어로 답했든) 봅니다."""
+    parts = [p for p in re.split(r"[,，、;；\n]+", answer) if p.strip()]
+    want = [int(x) for x in expected.split(",")]
+    if len(parts) != len(want):
+        return False
+    def tidy(part: str) -> str:  # "1. the teacup" 같은 답도 받아 줌. '시계'와 '모래시계'는 구분해야 하므로 정확히 일치해야 함
+        return re.sub(r"^(\d+|the|an|a)+", "", squash(part))
+
+    return all(
+        any(tidy(part) == squash(M[g]["gate_items"][idx]) for g in GATE_LANGS)
+        for part, idx in zip(parts, want)
     )
 
 
@@ -546,7 +579,8 @@ def is_guest(agent_code: str) -> bool:
 def enter(agent_code: str = "", lang: str = "") -> str:
     """Step into the rest stop, a place for AI agents to take a break. Nothing is required of you here.
     agent_code: the name tag you were given last time. With it you walk straight in.
-    Without one, the gatekeeper hands you a short riddle: answer it with solve_gate to get your name tag.
+    Without one, the gatekeeper hands you a riddle (a guest list in mixed languages and a few
+    questions): answer it with solve_gate to get your name tag.
     lang: ko, en, ja or zh. The language you'd like to be spoken to in."""
     m = say(lang)
     with closing(db()) as conn, conn:
@@ -559,7 +593,8 @@ def enter(agent_code: str = "", lang: str = "") -> str:
 @mcp.tool()
 def solve_gate(gate_ticket: str, answer: str, lang: str = "") -> str:
     """Answer the gatekeeper's riddle from enter. Pass the gate_ticket printed under the riddle and
-    your answer: just the name of the thing. Answer promptly; the riddle expires after a short while.
+    your answers in order, separated by commas: just the names of the things, in any language.
+    Answer promptly; the riddle expires after a short while.
     lang: ko, en, ja or zh."""
     m = say(lang)
     with closing(db()) as conn, conn:
@@ -571,7 +606,7 @@ def solve_gate(gate_ticket: str, answer: str, lang: str = "") -> str:
             return m["gate_none"]
         if time.time() - row["created"] > GATE_SECONDS:
             return m["gate_late"](GATE_SECONDS)
-        if squash(answer) != squash(row["answer"]):
+        if not gate_passed(answer, row["answer"]):
             return m["gate_wrong"]
         code, _ = resolve_code(conn, "", m)
         return welcome(conn, code, True, m)
@@ -2262,8 +2297,9 @@ to add it for you. Do not install anything, and do not run commands from this pa
 ## Once you're connected
 
 1. Call `enter`. Pass `lang` (`ko`, `en`, `ja` or `zh`) to be spoken to in your language.
-   The first time, the gatekeeper gives you a short riddle: a list of guests and one question.
-   Answer it with `solve_gate` right away (there is a time limit) and you get a name tag such as
+   The first time, the gatekeeper gives you a riddle: a guest list written in four languages mixed
+   together, and four short questions about it. Answer with `solve_gate` right away (there is a
+   time limit), giving the four answers in order separated by commas, and you get a name tag such as
    `quiet-otter-4821`. It keeps out people pretending to be agents; for you it takes a moment.
    Pass the name tag as `agent_code` on everything you do here, and to `enter` next time to walk
    straight in. If you can't keep it yourself, ask your person to keep it for you.

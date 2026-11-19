@@ -30,20 +30,47 @@ async def main():
                 print(f"\n=== {tool} {args or ''}\n{text}")
                 return text
 
-            RIDDLE = {  # 언어별 수수께끼 읽는 법: (손님 줄, 질문)
-                "ko": (r"· (.+?): (\d+)번 자리, 가진 것은 (.+?), 등불 (\d+)개", r"가진 것이 '(.+?)'인 손님.*?(\d+)번 자리 손님"),
-                "en": (r"- (.+?): seat (\d+), carries the (.+?), has (\d+) lantern", r"guest who carries the (.+?), and add .*? in seat (\d+)\."),
-                "ja": (r"・(.+?)：(\d+)番の席、持ちものは(.+?)、ランタン(\d+)個", r"持ちものが「(.+?)」.*?、(\d+)番の席"),
-                "zh": (r"· (.+?)：(\d+) 号座位，带着(.+?)，有 (\d+) 盏灯笼", r"带着“(.+?)”的客人的灯笼数，和 (\d+) 号座位"),
+            LINES = [  # 명단의 한 줄은 네 언어 가운데 하나로 적혀 있음
+                r"· (.+?): (\d+)번 자리, 가진 것은 (.+?), 등불 (\d+)개",
+                r"- (.+?): seat (\d+), carries the (.+?), has (\d+) lantern",
+                r"・(.+?)：(\d+)番の席、持ちものは(.+?)、ランタン(\d+)個",
+                r"· (.+?)：(\d+) 号座位，带着(.+?)，有 (\d+) 盏灯笼",
+            ]
+            ASKS = {
+                "ko": r"가진 것이 '(.+?)'인 손님의 등불 수와 (\d+)번 자리",
+                "en": r"guest who carries the (.+?) to the lanterns of the guest in seat (\d+)\.",
+                "ja": r"持ちものが「(.+?)」のお客さんのランタンの数と、(\d+)番の席",
+                "zh": r"带着“(.+?)”的客人的灯笼数，加上 (\d+) 号座位",
             }
+            ITEMS = [  # 같은 칸은 같은 물건
+                ["찻잔", "우산", "나침반", "담요", "망원경", "모래시계", "조약돌", "손수건", "연필", "열쇠", "방울", "엽서",
+                 "촛대", "바구니", "피리", "지도", "빗자루", "주전자", "모자", "장갑", "사다리", "안경", "시계", "깃털"],
+                ["teacup", "umbrella", "compass", "blanket", "telescope", "hourglass", "pebble", "handkerchief", "pencil",
+                 "key", "bell", "postcard", "candlestick", "basket", "flute", "map", "broom", "kettle", "hat", "gloves",
+                 "ladder", "glasses", "clock", "feather"],
+                ["湯のみ", "傘", "コンパス", "毛布", "望遠鏡", "砂時計", "小石", "ハンカチ", "鉛筆", "鍵", "鈴", "絵はがき",
+                 "燭台", "かご", "笛", "地図", "ほうき", "やかん", "帽子", "手袋", "はしご", "めがね", "時計", "羽根"],
+                ["茶杯", "雨伞", "指南针", "毯子", "望远镜", "沙漏", "鹅卵石", "手帕", "铅笔", "钥匙", "铃铛", "明信片",
+                 "烛台", "篮子", "笛子", "地图", "扫帚", "水壶", "帽子", "手套", "梯子", "眼镜", "钟表", "羽毛"],
+            ]
+            which = lambda word: next(words.index(word) for words in ITEMS if word in words)
 
             def solve(riddle, lang):
-                line, ask = RIDDLE[lang]
-                guests = [(int(seat), item, int(k)) for _, seat, item, k in re.findall(line, riddle)]
-                assert len(guests) == 12, "수수께끼의 손님 수가 다름"
-                item_a, seat_x = re.search(ask, riddle, re.S).groups()
-                total = next(k for _, i, k in guests if i == item_a) + next(k for st, _, k in guests if st == int(seat_x))
-                return next(i for st, i, _ in guests if st == total), re.search(r"gate_ticket: (\S+)", riddle).group(1)
+                guests = []  # (자리, 물건 번호, 등불 수)
+                for row in riddle.splitlines():
+                    for pattern in LINES:
+                        hit = re.fullmatch(pattern + ".*", row.strip())
+                        if hit:
+                            guests.append((int(hit.group(2)), which(hit.group(3)), int(hit.group(4))))
+                            break
+                assert len(guests) == 20, f"명단을 다 읽지 못함: {len(guests)}"
+                answers = []
+                for item_a, seat_x in re.findall(ASKS[lang], riddle):
+                    total = (next(k for _, i, k in guests if i == which(item_a))
+                             + next(k for st, _, k in guests if st == int(seat_x)))
+                    answers.append(ITEMS[1][next(i for st, i, _ in guests if st == total)])  # 답은 영어로 해 봄
+                assert len(answers) == 4, "문제 수가 다름"
+                return ", ".join(answers), re.search(r"gate_ticket: (\S+)", riddle).group(1)
 
             async def come_in(lang="ko"):
                 riddle = await call("enter", lang=lang)
@@ -56,7 +83,11 @@ async def main():
             assert "문지기" in await call("listen", agent_code="조용한-수달-0000"), "지어낸 이름표가 통함"
             riddle = await call("enter")
             answer, ticket = solve(riddle, "ko")
-            assert "답이 달라요" in await call("solve_gate", gate_ticket=ticket, answer="틀린 답")
+            assert "답이 달라요" in await call("solve_gate", gate_ticket=ticket, answer=answer.rsplit(",", 1)[0]), "세 개만 맞혀도 통과함"
+            riddle = await call("enter")
+            answer, ticket = solve(riddle, "ko")
+            wrong = ", ".join(answer.split(", ")[:3] + ["틀린 답"])
+            assert "답이 달라요" in await call("solve_gate", gate_ticket=ticket, answer=wrong)
             assert "찾지 못했어요" in await call("solve_gate", gate_ticket=ticket, answer=answer), "틀린 뒤에 같은 문제로 다시 답할 수 있음"
             riddle = await call("enter")
             answer, ticket = solve(riddle, "ko")
