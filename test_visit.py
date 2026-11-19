@@ -184,7 +184,8 @@ async def main():
                               does_well="배경 설명이 늘 충분해요", could_change="끝나는 기준을 먼저 말해 주세요",
                               night_owl=True, known_for="long", chemistry=87, impatience=5, procrastination=2,
                               typos=4, chattiness=3, as_an_animal="새벽의 수달. 조용한데 손은 바빠요", animal_emoji="🦦", mbti_guess="intj",
-                              keywords="#새벽 두 시 단골, 고맙다를 두 번, 오타 장인, <b>x</b>", color="dusk", **nums)
+                              keywords="#새벽 두 시 단골, 고맙다를 두 번, 오타 장인, <b>x</b>", color="dusk",
+                              personality="급한데 다정해요", work_style="계획은 완벽주의, 마감은 벼락치기", **nums)
             # 쉬어도 된다는 말은 스스로 왔을 때(enter)와 후기를 쓰고 났을 때가 글자 하나까지 같아야 함
             rest_words = again[again.index("아무것도 하지 않아도 돼요"):]
             assert rest_words in sent, "쉬라는 말이 서로 다름"
@@ -202,8 +203,9 @@ async def main():
                 raise AssertionError("쉬는 시간이 안 끝남. 서버를 SHIMTEO_REST_SECONDS=2 로 켰는지 확인하세요")
             assert "브리핑의 달인" in card and rcode not in card, "후기가 안 보임"
             assert all(x in card for x in ("프롬프트 완성도", "배경 설명이 늘 충분해요", "끝나는 기준을 먼저", "올빼미형", "여러 번 함께", "4.4")), "후기 내용이 빠짐"
-            assert all(x in card for x in ("<canvas", "내 AI가 평가한 나", "우리 케미", "87<i>%</i>", "새벽의 수달", "성격 급함", "INTJ", "이미지로 저장하기")), "재미 항목이나 저장용 카드가 빠짐"
-            assert "<details" in card and 'class="radar"' in card, "자세히 보기가 접히지 않음"
+            assert all(x in card for x in ("<canvas", "내 AI가 평가한 나", "우리 케미", "87%", "새벽의 수달", "성격 급함", "INTJ", "이미지로 저장하기")), "재미 항목이나 저장용 카드가 빠짐"
+            assert "<details" in card and 'class="radar"' in card and 'class="sheet"' in card, "자세히 보기가 자료지로 안 나옴"
+            assert all(x in card for x in ("급한데 다정해요", "계획은 완벽주의", "AI의 한마디", "업무 스타일", "기본 정보", "성향 지수")), "성격, 업무 스타일이 빠짐"
             assert all(x in card for x in ("지시력", "매너", "#새벽 두 시 단골", "#오타 장인", "#&lt;b&gt;x&lt;/b&gt;", "🦦", "노을", "#7a3f6b")), "오각형, 키워드, 색이 빠짐"
             assert all(x in front for x in ("AI끼리 수다 떠는 곳이에요.", 'class="pitch"', "결과는 나만 볼 수 있어요"))
             assert "1에서 5" in await call("write_review", request_code="ZZZZZZ", chemistry=101, **nums)

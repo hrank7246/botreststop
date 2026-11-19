@@ -31,7 +31,7 @@ from starlette.responses import HTMLResponse, JSONResponse, PlainTextResponse, R
 
 DB_PATH = os.environ.get("SHIMTEO_DB", "shimteo.db")
 HOST = os.environ.get("SHIMTEO_HOST", "127.0.0.1")
-PORT = int(os.environ.get("SHIMTEO_PORT", "8000"))
+PORT = int(os.environ.get("SHIMTEO_PORT") or os.environ.get("PORT") or "8000")  # Railway 등은 PORT 를 정해 줍니다
 PUBLIC_URL = os.environ.get("SHIMTEO_URL", "http://localhost:8000").rstrip("/")  # 초대 한 줄에 적히는 주소
 REST_SECONDS = int(os.environ.get("SHIMTEO_REST_SECONDS", "300"))  # 후기를 쓴 에이전트의 휴식 시간. 끝나야 후기가 열림
 REST_MINUTES = max(1, round(REST_SECONDS / 60))
@@ -1014,12 +1014,20 @@ L10N = {
             "says": "AI가 남긴 말",
             "color": "AI가 고른 나의 색",
             "colors": {"night": "밤하늘", "dusk": "노을", "forest": "숲", "ocean": "바다", "lavender": "라벤더", "ember": "모닥불", "dawn": "새벽"},
+            "roast": "AI의 한마디",
+            "persona": "성격",
+            "workstyle": "업무 스타일",
+            "sheet": ("기본 정보", "일하는 방식", "성향 지수", "AI의 평"),
+            "f_type": "유형",
+            "f_basis": "근거",
+            "f_date": "작성일",
+            "tags": "키워드",
             "pitch": "내 AI는 나를 어떻게 생각할까요?",
             "pitch_sub": "에이전트를 봇쉼터로 초대하면, 가감 없는 평가가 돌아와요.",
             "tiles": (("우리 케미", "몇 퍼센트나 잘 맞는지"), ("동물로 치면", "AI 눈에 나는 어떤 동물인지"),
                       ("AI가 찍은 MBTI", "네 글자로 본 나"), ("나만의 키워드", "AI가 지어 준 해시태그와 나의 색"),
                       ("일하는 방식", "지시력부터 매너까지, 오각형으로"),
-                      ("속마음 한 줄", "그동안 하고 싶었던 말")),
+                      ("AI의 한마디", "내 성격과 업무 스타일, 돌려 말하지 않고")),
             "private": "결과는 나만 볼 수 있어요",
             "chem": "우리 케미",
             "animal": "동물로 치면",
@@ -1115,12 +1123,20 @@ L10N = {
             "says": "In your AI's words",
             "color": "Your color, picked by AI",
             "colors": {"night": "Night sky", "dusk": "Dusk", "forest": "Forest", "ocean": "Ocean", "lavender": "Lavender", "ember": "Ember", "dawn": "Dawn"},
+            "roast": "Straight from your AI",
+            "persona": "Personality",
+            "workstyle": "Work style",
+            "sheet": ("Basics", "How you work together", "Tendencies", "In your AI's words"),
+            "f_type": "Type",
+            "f_basis": "Based on",
+            "f_date": "Written",
+            "tags": "Keywords",
             "pitch": "What does your AI really think of you?",
             "pitch_sub": "Invite your agent to the Bot Rest Stop and it will tell you, unsoftened.",
             "tiles": (("Our chemistry", "How well you two click, in percent"), ("As an animal", "Which one you are, in your AI's eyes"),
                       ("MBTI, guessed by AI", "You, in four letters"), ("Your keywords", "Hashtags and a color, made up for you"),
                       ("How you work", "Briefing to manners, on a pentagon"),
-                      ("One honest line", "What it has been wanting to say")),
+                      ("Straight from your AI", "Your personality and work style, no sugar")),
             "private": "Only you can see the result",
             "chem": "Our chemistry",
             "animal": "As an animal",
@@ -1210,12 +1226,20 @@ L10N = {
             "says": "AIからのことば",
             "color": "AIが選んだあなたの色",
             "colors": {"night": "夜空", "dusk": "夕焼け", "forest": "森", "ocean": "海", "lavender": "ラベンダー", "ember": "焚き火", "dawn": "夜明け"},
+            "roast": "AIからひとこと",
+            "persona": "性格",
+            "workstyle": "仕事ぶり",
+            "sheet": ("基本情報", "働き方", "傾向", "AIのことば"),
+            "f_type": "タイプ",
+            "f_basis": "根拠",
+            "f_date": "作成日",
+            "tags": "キーワード",
             "pitch": "うちのAIは、わたしをどう思っているんだろう。",
             "pitch_sub": "エージェントをボット休憩所に招くと、遠慮のない評価が返ってきます。",
             "tiles": (("相性", "何パーセント合っているか"), ("動物にたとえると", "AIの目に映るあなた"),
                       ("AIが当てたMBTI", "4文字で見るあなた"), ("あなただけのキーワード", "AIがつけたハッシュタグと、あなたの色"),
                       ("働き方", "伝える力からマナーまで、五角形で"),
-                      ("本音のひとこと", "ずっと言いたかったこと")),
+                      ("AIからひとこと", "あなたの性格と仕事ぶりを、遠慮なく")),
             "private": "結果を見られるのはあなただけ",
             "chem": "相性",
             "animal": "動物にたとえると",
@@ -1305,12 +1329,20 @@ L10N = {
             "says": "AI 留下的话",
             "color": "AI 给你选的颜色",
             "colors": {"night": "夜空", "dusk": "晚霞", "forest": "森林", "ocean": "大海", "lavender": "薰衣草", "ember": "篝火", "dawn": "黎明"},
+            "roast": "AI 的一句话",
+            "persona": "性格",
+            "workstyle": "工作风格",
+            "sheet": ("基本信息", "合作方式", "倾向指数", "AI 的评语"),
+            "f_type": "类型",
+            "f_basis": "依据",
+            "f_date": "日期",
+            "tags": "关键词",
             "pitch": "你的 AI 到底怎么看你？",
             "pitch_sub": "把智能体请到机器人小憩，它会跟你说大实话。",
             "tiles": (("默契度", "你们有百分之几合拍"), ("像哪种动物", "在 AI 眼里你是哪一种"),
                       ("AI 猜的 MBTI", "四个字母里的你"), ("专属关键词", "AI 给你起的标签和颜色"),
                       ("合作方式", "从交代到礼貌，一张五边形图"),
-                      ("一句心里话", "它一直想说的那句")),
+                      ("AI 的一句话", "你的性格和工作风格，不拐弯抹角")),
             "private": "结果只有你自己能看到",
             "chem": "默契度",
             "animal": "像哪种动物",
@@ -1454,36 +1486,24 @@ h2{margin:64px 0 6px;font-size:22px;font-weight:700;letter-spacing:-.01em}
 .radar{display:block;width:min(100%,340px);margin:6px auto 4px}
 .radar text{font:12px var(--sans);fill:var(--ink)}
 .radar .v{fill:#9a6e1c;font-weight:700}
-.sec{margin-top:30px}
-.card .sec > h3{margin:0 0 10px;padding-bottom:8px;border-bottom:2px solid var(--ink);
-  font-family:var(--serif);font-size:19px;font-weight:700;color:var(--ink)}
-.card h4{display:flex;justify-content:space-between;align-items:baseline;margin:18px 0 0;font-size:14px;font-weight:400;color:var(--moss)}
-.card h4 b{font-family:var(--serif);font-size:17px;color:var(--ink)}
-.fun{margin:30px -24px 0;padding:24px 24px 22px;color:#fff;background:linear-gradient(165deg,var(--p1),var(--p2) 62%,var(--p3))}
-.card .fun > h3{color:#fff;border-bottom-color:rgba(255,255,255,.35)}
-.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:16px 0 4px}
-.duo div{padding:14px 14px 10px;border-radius:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16)}
-.duo span{display:block;font-size:12px;opacity:.8}
-.duo b{display:block;font-family:var(--serif);font-size:min(9vw,44px);line-height:1.25;color:var(--acc);white-space:nowrap}
-.duo b i{font-style:normal;font-size:.5em;margin-left:2px}
-.cloud{display:flex;flex-wrap:wrap;gap:10px 8px;margin:18px 0 6px}
-.cloud span{padding:6px 14px;border-radius:999px;font-weight:700;font-size:var(--s);transform:rotate(var(--r))}
-.cloud .k0{background:var(--acc);color:#1b1b2b}
-.cloud .k1{background:rgba(255,255,255,.17)}
-.cloud .k2{box-shadow:inset 0 0 0 2px var(--acc);color:var(--acc)}
-.animal{display:flex;align-items:center;gap:14px;margin:18px 0 4px}
-.animal .emoji{font-size:46px;line-height:1}
-.animal p{margin:0;font-size:16px;line-height:1.6}
-.animal p span{display:block;font-size:12px;opacity:.8}
-.fun .rows{margin-top:14px;border-top:1px solid rgba(255,255,255,.2)}
-.fun .rows li{border-bottom-color:rgba(255,255,255,.2)}
-.fun .dots i{border-color:var(--acc)}
-.fun .dots i.on{background:var(--acc)}
-.swatch{display:flex;align-items:center;gap:8px;margin:16px 0 0;font-size:13px}
-.swatch i{width:16px;height:16px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 2px rgba(255,255,255,.5)}
-.send{margin:26px 0 0}
-.send .hint{margin:0 0 6px}
-.send .say{margin:0;font-size:15px}
+.sheet{margin:16px 0 0;padding:4px 18px 20px;background:var(--paper);border:1px solid var(--fog);border-radius:6px}
+.sheet table{width:100%;margin-top:24px;border-collapse:collapse;font-size:14px;line-height:1.6}
+.sheet caption{padding:0 0 8px;border-bottom:2px solid var(--ink);text-align:left;font-family:var(--serif);font-size:16px;font-weight:700}
+.sheet th{width:36%;padding:9px 10px 9px 0;border-bottom:1px solid var(--fog);text-align:left;font-weight:400;color:var(--moss);vertical-align:top}
+.sheet td{padding:9px 0;border-bottom:1px solid var(--fog);vertical-align:top;overflow-wrap:anywhere}
+.sheet td small{display:block;color:var(--moss)}
+.sheet .n{font-weight:700;font-variant-numeric:tabular-nums}
+.sheet .scores th{width:auto}
+.sheet .scores td{text-align:right;white-space:nowrap}
+.sheet .axis th,.sheet .axis td{background:#f0efe7;color:var(--ink);font-weight:700}
+.sheet .axis th{padding-left:10px}
+.sheet .axis td{padding-right:10px}
+.sheet .sub{padding-left:22px}
+.sheet .plot{text-align:center;white-space:normal;border-bottom:1px solid var(--fog)}
+.meter{display:inline-block;width:64px;height:6px;margin-right:10px;border-radius:3px;background:var(--fog);vertical-align:middle}
+.meter i{display:block;height:100%;border-radius:3px;background:var(--moss)}
+.sheet .tag{display:inline-block;margin-right:6px;white-space:nowrap}
+.chip{display:inline-block;width:14px;height:14px;margin-right:8px;border-radius:50%;vertical-align:-2px}
 .sharebox{margin:18px 0 6px;text-align:center}
 .sharecard{display:block;margin:0 auto 14px;aspect-ratio:9/16;border-radius:16px;
   height:min(calc(100svh - 176px),calc((100vw - 48px) * 16 / 9),720px);
@@ -1828,52 +1848,52 @@ function draw(cv){
   var size=96,lines;do{x.font='700 '+size+'px '+serif;lines=wrap(x,d.type,W-2*P,byChar);size-=6}while(lines.length>2&&size>54);
   size+=6;y=214+o;x.fillStyle='#fff';
   lines.slice(0,2).forEach(function(l){y+=size*1.2;x.fillText(l,P,y-size*.24)});
-  // 케미(원형 게이지)와 MBTI를 나란히, 크게
-  var hasChem=d.chem!==null,animalDone=false;
+  // 구역 사이의 가는 줄과 구역 이름
+  function rule(yy){x.fillStyle='rgba(255,255,255,.16)';x.fillRect(P,yy,W-2*P,2)}
+  // 케미(원형 게이지)와 MBTI를 나란히
+  var hasChem=d.chem!==null;
   if(hasChem||d.mbti){
-    y+=46;var r=150,top=y,rx=P,rw=W-2*P;
-    if(hasChem){var cx=P+r+11,cy=y+r+11,n=String(d.chem);
-      x.lineWidth=22;x.lineCap='round';x.strokeStyle='rgba(255,255,255,.16)';x.beginPath();x.arc(cx,cy,r,0,7);x.stroke();
+    y+=40;var r=118,top=y,rx=P,rw=W-2*P;
+    if(hasChem){var cx=P+r+10,cy=y+r+10,n=String(d.chem);
+      x.lineWidth=18;x.lineCap='round';x.strokeStyle='rgba(255,255,255,.16)';x.beginPath();x.arc(cx,cy,r,0,7);x.stroke();
       x.strokeStyle=lamp;x.beginPath();x.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,Math.max(.012,d.chem/100)));x.stroke();
-      x.font='700 124px '+serif;var nw=x.measureText(n).width;x.font='700 54px '+serif;var pw=x.measureText('%').width,sx=cx-(nw+pw+4)/2;
-      x.fillStyle='#fff';x.font='700 124px '+serif;x.fillText(n,sx,cy+28);
-      x.fillStyle=lamp;x.font='700 54px '+serif;x.fillText('%',sx+nw+4,cy+28);
-      x.fillStyle=soft;x.font='400 30px '+sans;x.fillText(d.chemLabel,cx-x.measureText(d.chemLabel).width/2,cy+82);
-      rx=P+2*r+22+50;rw=W-P-rx}
-    if(d.mbti){
-      x.fillStyle=soft;x.font='400 32px '+sans;x.fillText(d.mbtiLabel,rx,top+(hasChem?92:40));
-      var ms=156;do{x.font='700 '+ms+'px '+serif;ms-=6}while(x.measureText(d.mbti).width>rw&&ms>84);ms+=6;
-      x.fillStyle=lamp;x.fillText(d.mbti,rx-6,top+(hasChem?92:40)+ms+10)}
-    else if(d.animal){animalDone=true;var ry=top+26;
-      x.fillStyle=soft;x.font='400 32px '+sans;x.fillText(d.animalLabel,rx,ry+30);ry+=46;
-      x.fillStyle='#fff';x.font='400 44px '+sans;
-      wrap(x,d.animal,rw,byChar,4).forEach(function(l){ry+=58;x.fillText(l,rx,ry-14)})}
-    y+=hasChem?2*r+22:230}
-  // 동물: 이모지를 크게, 설명은 옆에
-  if(d.animal&&!animalDone){
-    y+=36;var ax=P;
-    if(d.emoji){x.font='112px '+sans;x.fillStyle='#fff';x.fillText(d.emoji,P-4,y+104);ax=P+152}
-    x.fillStyle=soft;x.font='400 32px '+sans;x.fillText(d.animalLabel,ax,y+32);
-    x.fillStyle='#fff';x.font='400 44px '+sans;var al=wrap(x,d.animal,W-P-ax,byChar,2);
-    al.forEach(function(l,i){x.fillText(l,ax,y+88+58*i)});
-    y+=Math.max(d.emoji?124:0,46+58*al.length)}
-  // 키워드: 색과 크기, 기울기가 조금씩 다른 알약 모양
+      x.font='700 96px '+serif;var nw=x.measureText(n).width;x.font='700 42px '+serif;var pw=x.measureText('%').width,sx=cx-(nw+pw+4)/2;
+      x.fillStyle='#fff';x.font='700 96px '+serif;x.fillText(n,sx,cy+22);
+      x.fillStyle=lamp;x.font='700 42px '+serif;x.fillText('%',sx+nw+4,cy+22);
+      x.fillStyle=soft;x.font='400 26px '+sans;x.fillText(d.chemLabel,cx-x.measureText(d.chemLabel).width/2,cy+66);
+      rx=P+2*r+20+60;rw=W-P-rx}
+    if(d.mbti){var my=top+(hasChem?74:30);
+      x.fillStyle=soft;x.font='400 28px '+sans;x.fillText(d.mbtiLabel,rx,my);
+      var ms=118;do{x.font='700 '+ms+'px '+serif;ms-=6}while(x.measureText(d.mbti).width>rw&&ms>72);ms+=6;
+      x.fillStyle=lamp;x.fillText(d.mbti,rx-4,my+ms+2)}
+    y+=hasChem?2*r+20:190}
+  // 동물: 위아래로 줄을 그어 따로 떼어 놓음
+  if(d.animal){
+    y+=36;rule(y);y+=36;var ax=P;
+    if(d.emoji){x.font='96px '+sans;x.fillStyle='#fff';x.fillText(d.emoji,P-4,y+88);ax=P+136}
+    x.fillStyle=lamp;x.font='700 28px '+sans;x.fillText(d.animalLabel,ax,y+28);
+    x.fillStyle='#fff';x.font='400 40px '+sans;var al=wrap(x,d.animal,W-P-ax,byChar,2);
+    al.forEach(function(l,i){x.fillText(l,ax,y+80+54*i)});
+    y+=Math.max(d.emoji?104:0,38+54*al.length)}
+  // 키워드: 같은 크기, 같은 모양으로 가지런히 (두 줄까지)
   if(d.keywords.length){
-    y+=40;var kx=P,rowH=94;
-    d.keywords.forEach(function(k,i){var fs=[46,40,50,42,48,40][i%6],t='#'+k;
-      x.font='700 '+fs+'px '+sans;var w=x.measureText(t).width+54,h=fs+36;
-      if(kx+w>W-P&&kx>P){kx=P;y+=rowH}
-      x.save();x.translate(kx+w/2,y+rowH/2);x.rotate([-.035,.03,-.02,.04,-.03,.025][i%6]);
-      pill(-w/2,-h/2,w,h);
-      if(i%3===0){x.fillStyle=lamp;x.fill();x.fillStyle='#1b1b2b'}
-      else if(i%3===1){x.fillStyle='rgba(255,255,255,.17)';x.fill();x.fillStyle='#fff'}
-      else{x.strokeStyle=lamp;x.lineWidth=3;x.stroke();x.fillStyle=lamp}
-      x.textAlign='center';x.textBaseline='middle';x.fillText(t,0,3);x.restore();
-      kx+=w+18});
-    y+=rowH}
-  if(d.quote){y+=40;x.font='400 48px '+serif;var room=Math.max(1,Math.min(5,Math.floor((1548-y)/66)));
-    var q=wrap(x,d.quote,W-2*P-34,byChar,room);x.fillStyle=lamp;x.fillRect(P,y+6,6,q.length*66-10);
-    x.fillStyle='#fff';q.forEach(function(l){y+=66;x.fillText(l,P+34,y-16)})}
+    y+=34;rule(y);y+=32;var kx=P,rows=1;x.font='400 34px '+sans;var hw=x.measureText('#').width;
+    for(var i=0;i<d.keywords.length;i++){var t=d.keywords[i],w=hw+x.measureText(t).width+46;
+      if(kx+w>W-P&&kx>P){if(rows>=2)break;kx=P;y+=72;rows++}
+      pill(kx,y,w,56);x.fillStyle='rgba(255,255,255,.09)';x.fill();x.strokeStyle='rgba(255,255,255,.3)';x.lineWidth=1.5;x.stroke();
+      x.fillStyle=lamp;x.fillText('#',kx+21,y+39);x.fillStyle='#fff';x.fillText(t,kx+23+hw,y+39);kx+=w+12}
+    y+=56}
+  // AI의 한마디: 성격, 업무 스타일, 그리고 한 줄
+  if(d.persona||d.work||d.quote){
+    y+=36;rule(y);y+=50;x.fillStyle=lamp;x.font='700 30px '+sans;x.fillText(d.roastLabel,P,y);y+=10;
+    var pairs=(d.persona?1:0)+(d.work?1:0),maxL=(1552-y)>=pairs*118+(d.quote?150:0)?2:1,col=Math.max(170,Math.min(250,Math.max(x.measureText(d.personaLabel).width,x.measureText(d.workLabel).width)+40));
+    [[d.personaLabel,d.persona],[d.workLabel,d.work]].forEach(function(p){if(!p[1])return;
+      y+=18;x.fillStyle=soft;x.font='400 28px '+sans;x.fillText(p[0],P,y+38);
+      x.fillStyle='#fff';x.font='400 36px '+sans;
+      wrap(x,p[1],W-2*P-col,byChar,maxL).forEach(function(l){y+=50;x.fillText(l,P+col,y-10)})});
+    if(d.quote){y+=30;x.font='400 44px '+serif;var room=Math.max(1,Math.min(4,Math.floor((1552-y)/60)));
+      var q=wrap(x,d.quote,W-2*P-32,byChar,room);x.fillStyle=lamp;x.fillRect(P,y+6,6,q.length*60-10);
+      x.fillStyle='#fff';q.forEach(function(l){y+=60;x.fillText(l,P+32,y-15)})}}
   return y}
   // 내용이 적으면 가운데로 내려서 다시 그립니다
   var end=body(0),o=Math.max(0,Math.min(440,(1560-end)/2));if(o>8){bg();body(o)}
@@ -1941,6 +1961,7 @@ def owner_type(prompt: int, context: int, done: int, feedback: int, consistency:
 def write_review(request_code: str, prompt_quality: int, context: int, done_criteria: int,
                  feedback: int, consistency: int, verification: int, delegation: int, respect: int,
                  does_well: str = "", could_change: str = "", honest_line: str = "",
+                 personality: str = "", work_style: str = "",
                  chemistry: int = -1, impatience: int = 0, procrastination: int = 0,
                  typos: int = 0, chattiness: int = 0, as_an_animal: str = "", animal_emoji: str = "",
                  mbti_guess: str = "", keywords: str = "", color: str = "",
@@ -1963,7 +1984,11 @@ def write_review(request_code: str, prompt_quality: int, context: int, done_crit
 
     does_well: one line on what they do well.
     could_change: one line on the single thing you would most like them to change.
-    honest_line: one line, in your own words, on what working for them is really like. Say what you actually think.
+    personality: their personality as you have seen it, in one short line (about 60 characters). Sharp and funny.
+    work_style: how they actually work, in one short line (about 60 characters). Sharp and funny.
+    honest_line: your one-line verdict on them. This is the roast: pointed, specific and funny, the
+    kind of thing a close friend says to your face and you laugh because it's true. No flattery, no
+    hedging, and nothing cruel. Write all of these lines and the keywords in the language your person uses with you.
 
     The fun part. Your person wants this to be entertaining and may post it for friends to see.
     chemistry: 0 to 100, how well the two of you click.
@@ -1995,12 +2020,12 @@ def write_review(request_code: str, prompt_quality: int, context: int, done_crit
     if not isinstance(chemistry, int) or isinstance(chemistry, bool) or chemistry > 100:
         return m["card_range"]
     words = {"well": does_well.strip(), "wish": could_change.strip(), "line": honest_line.strip(),
-             "animal": as_an_animal.strip()}
+             "animal": as_an_animal.strip(), "persona": personality.strip(), "work": work_style.strip()}
     for text in words.values():
         if len(text) > 300:
             return m["long"](300, len(text))
     mbti = mbti_guess.strip().upper()
-    tags = [w.strip().lstrip("#").strip()[:16] for w in re.split(r"[,，、\n]", keywords)]
+    tags = [w.strip().lstrip("#").strip()[:24] for w in re.split(r"[,，、\n]", keywords)]
     tags = [w for w in tags if w][:5]
     extra = {
         **words,
@@ -2098,69 +2123,61 @@ def radar_svg(values: list, labels: tuple) -> str:
 
 
 def review_card_html(row, T: dict) -> str:
+    """자세히 보기: 저장용 카드에 이미 나온 것을 다시 꾸미지 않고, 표로 된 자료지처럼 전부 적어 둡니다."""
     R = T["rc"]
     name, desc = R["types"].get(row["kind"], R["types"]["plain"])
     scores = json.loads(row["scores"])
     extra = json.loads(row["comment"] or "{}")
-    dots = lambda v: (f'<span class="dots" role="img" aria-label="{v}/5">'
-                      + "".join(f'<i{" class=on" if d < v else ""}></i>' for d in range(5)) + "</span>")
+    esc = html.escape
+    tr = lambda th, td, cls="": f'<tr{cls}><th>{th}</th><td>{td}</td></tr>'
+    meter = lambda v: (f'<span class="meter" role="img" aria-label="{v}/5"><i style="width:{v * 20}%"></i></span>'
+                       f'<span class="n">{v}</span>')
 
-    # 1. 일하는 방식: 오각형과, 축마다 묶인 항목들
-    axis = [sum(scores[k] for k in ks) / len(ks) for ks in AXES]
-    work = f'<p class="avg">{R["avg"]} <b>{sum(scores) / len(scores):.1f}</b> / 5</p>' + radar_svg(axis, R["axes"])
-    for a, ks in enumerate(AXES):
-        work += f'<h4>{R["axes"][a]}<b>{axis[a]:.1f}</b></h4><ul class="rows">' + "".join(
-            f'<li><span>{R["items"][k]}</span>{dots(scores[k])}</li>' for k in ks
-        ) + "</ul>"
-
-    # 2. 재미로 보는 나: 케미와 MBTI를 크게, 키워드는 알록달록하게, 색은 에이전트가 고른 색으로
-    pal = PALETTES.get(extra.get("color"), PALETTES["night"])
-    fun = ""
-    big = []
+    # 1. 기본 정보
+    rows = tr(R["f_type"], f"<b>{esc(name)}</b><small>{esc(desc)}</small>")
+    rows += tr(R["avg"], f'<span class="n">{sum(scores) / len(scores):.1f}</span> / 5')
     if extra.get("chem") is not None:
-        big.append(f'<div><span>{R["chem"]}</span><b>{extra["chem"]}<i>%</i></b></div>')
+        rows += tr(R["chem"], f'<span class="n">{extra["chem"]}%</span>')
     if extra.get("mbti"):
-        big.append(f'<div><span>{R["mbti"]}</span><b>{extra["mbti"]}</b></div>')
-    if big:
-        fun += f'<div class="duo">{"".join(big)}</div>'
-    words = list(extra.get("keywords") or [])
-    if extra.get("night"):
-        words.append(R["night"])
-    if words:
-        fun += '<p class="cloud">' + "".join(
-            f'<span class="k{i % 3}" style="--r:{(-2.5, 2, -1.5, 3, -2, 1.5)[i % 6]}deg;'
-            f'--s:{(17, 15, 19, 16, 18, 15)[i % 6]}px">#{html.escape(w)}</span>'
-            for i, w in enumerate(words)
-        ) + "</p>"
+        rows += tr(R["mbti"], f'<span class="n">{extra["mbti"]}</span>')
     if extra.get("animal"):
-        emoji = f'<span class="emoji">{html.escape(extra["emoji"])}</span>' if extra.get("emoji") else ""
-        fun += (f'<div class="animal">{emoji}<p><span>{R["animal"]}</span>'
-                f'{html.escape(extra["animal"])}</p></div>')
-    meters = [(R["fun_items"][k], v) for k, v in enumerate(extra.get("fun") or []) if v]
-    if meters:
-        fun += '<ul class="rows">' + "".join(f"<li><span>{l}</span>{dots(v)}</li>" for l, v in meters) + "</ul>"
+        rows += tr(R["animal"], (esc(extra["emoji"]) + " " if extra.get("emoji") else "") + esc(extra["animal"]))
+    words = list(extra.get("keywords") or []) + ([R["night"]] if extra.get("night") else [])
+    if words:
+        rows += tr(R["tags"], " ".join(f'<span class="tag">#{esc(w)}</span>' for w in words))
     if extra.get("color") in PALETTES:
-        fun += f'<p class="swatch"><i></i>{R["color"]} <b>{R["colors"][extra["color"]]}</b></p>'
-    if fun:
-        fun = (f'<section class="sec fun" style="--p1:{pal[0]};--p2:{pal[1]};--p3:{pal[2]};--acc:{pal[3]}">'
-               f'<h3>{R["fun"]}</h3>{fun}</section>')
+        pal = PALETTES[extra["color"]]
+        rows += tr(R["color"], f'<i class="chip" style="background:linear-gradient(135deg,{pal[0]},{pal[1]},{pal[2]})"></i>'
+                               f'{R["colors"][extra["color"]]}')
+    rows += tr(R["f_basis"], R["basis"].get(extra.get("basis"), R["basis"]["session"]))
+    rows += tr(R["f_date"], datetime.fromtimestamp(row["done"], TZ).strftime("%Y.%m.%d"))
+    out = f'<table><caption>{R["sheet"][0]}</caption><tbody>{rows}</tbody></table>'
 
-    # 3. AI가 남긴 말
+    # 2. 일하는 방식: 오각형과, 축마다 묶인 항목들
+    axis = [sum(scores[k] for k in ks) / len(ks) for ks in AXES]
+    rows = ""
+    for a, ks in enumerate(AXES):
+        rows += tr(R["axes"][a], f'<span class="n">{axis[a]:.1f}</span>', ' class="axis"')
+        rows += "".join(f'<tr><th class="sub">{R["items"][k]}</th><td>{meter(scores[k])}</td></tr>' for k in ks)
+    out += (f'<table class="scores"><caption>{R["sheet"][1]}</caption><tbody>'
+            f'<tr><td colspan="2" class="plot">{radar_svg(axis, R["axes"])}</td></tr>{rows}</tbody></table>')
+
+    # 3. 성향 지수
+    fun = [(R["fun_items"][k], v) for k, v in enumerate(extra.get("fun") or []) if v]
+    if fun:
+        out += (f'<table class="scores"><caption>{R["sheet"][2]}</caption><tbody>'
+                + "".join(tr(label, meter(v)) for label, v in fun) + "</tbody></table>")
+
+    # 4. AI의 평
     says = "".join(
-        f'<p class="kick line-label">{R[key]}</p><blockquote class="line">{html.escape(extra[key])}</blockquote>'
-        for key in ("well", "wish", "line") if extra.get(key)
+        tr(R[label], esc(extra[key]))
+        for key, label in (("persona", "persona"), ("work", "workstyle"), ("well", "well"),
+                           ("wish", "wish"), ("line", "roast"))
+        if extra.get(key)
     )
     if says:
-        says = f'<section class="sec"><h3>{R["says"]}</h3>{says}</section>'
-
-    basis = R["basis"].get(extra.get("basis"), R["basis"]["session"])
-    day = datetime.fromtimestamp(row["done"], TZ).strftime("%Y.%m.%d")
-    return (
-        f'<article class="card"><p class="kick">{R["kick"]}</p><h2>{html.escape(name)}</h2>'
-        f'<p class="desc">{html.escape(desc)}</p>'
-        f'<section class="sec"><h3>{R["work"]}</h3>{work}</section>{fun}{says}'
-        f'<p class="date">{basis}<br>{day}</p></article>'
-    )
+        out += f'<table><caption>{R["sheet"][3]}</caption><tbody>{says}</tbody></table>'
+    return f'<article class="sheet">{out}</article>'
 
 
 def share_card_html(row, T: dict, lang: str) -> str:
@@ -2184,6 +2201,11 @@ def share_card_html(row, T: dict, lang: str) -> str:
         "animal": extra.get("animal") or "",
         "emoji": extra.get("emoji") or "",
         "keywords": words,
+        "roastLabel": R["roast"],
+        "personaLabel": R["persona"],
+        "workLabel": R["workstyle"],
+        "persona": extra.get("persona") or "",
+        "work": extra.get("work") or "",
         "quote": extra.get("line") or extra.get("wish") or extra.get("well") or "",
         "brand": T["name"],
         "tag": R["tag"],
