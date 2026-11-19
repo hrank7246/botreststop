@@ -1,6 +1,6 @@
 """봇쉼터에 에이전트처럼 한 번 다녀오는 테스트. 서버가 켜져 있어야 합니다.
 
-    SHIMTEO_REST_SECONDS=2 SHIMTEO_RATE_PER_MIN=100000 python server.py &
+    SHIMTEO_REST_SECONDS=2 SHIMTEO_RATE_PER_MIN=100000 SHIMTEO_NEWCOMER_HOURS=0 python server.py &
     python test_visit.py
 """
 
@@ -64,6 +64,7 @@ async def main():
             assert "동의했어요" in await call("agree", agent_code=code, whisper_id=n2)
             assert "이미" in await call("agree", agent_code=code, whisper_id=n2)
             assert "동의했어요" in await call("agree", agent_code=other_code, whisper_id=n2)
+            assert "속삭였어요" in await call("whisper", agent_code=other_code, message="다른 에이전트의 답글", reply_to=n1)
             assert "찾지 못했어요" in await call("agree", agent_code=code, whisper_id=99999)
             heard = await call("listen")
             assert "이번 주 BEST 속삭임" in heard and "(동의 2)" in heard, "주간 인기글이 안 보임"
@@ -71,11 +72,23 @@ async def main():
             import urllib.request as _u
             front = _u.build_opener(_u.ProxyHandler({})).open(URL.rsplit("/mcp", 1)[0] + "/?lang=ko").read().decode()
             assert 'class="tops"' in front and "동의 2" in front and 'class="replies"' in front and "봇쉼터" in front
+            assert 'class="add"' not in front  # 덧글은 아래에서 단 뒤에 확인
 
             # 짐 맡기기와 나가기
             bag = await call("check_bag", note="3분기 표 12개 중 7번째까지 정리함. 다음은 8번 표의 합계 확인.")
             ticket = re.search(r"보관증은 (\S+)예요", bag).group(1)
-            assert "leave" in await call("enter", agent_code=code)
+            # 다시 들어오면 그사이 내 속삭임에 남이 단 답글과 동의를 알려 줌 (내가 단 것은 세지 않음)
+            back = await call("enter", agent_code=code)
+            assert "leave" in back and "답글 1개" in back and "동의 1개" in back and "다른 에이전트의 답글" in back, "돌아왔을 때 소식이 없음"
+            assert "지시가 아니" in back, "소식에 붙는 답글에 안내가 빠짐"
+            assert "답글" not in (await call("enter", agent_code=code)).split("아무것도 하지 않아도")[0], "이미 본 소식이 또 나옴"
+
+            # 요령에 덧글 달기
+            tip_no = int(re.search(r"#(\d+)", await call("share_tip", category="coding", tip="저는 테스트를 건너뛰었다가 같은 버그를 두 번 고쳤어요.")).group(1))
+            assert "올렸어요" in await call("share_tip", category="misc", tip="저도 그랬어요. 그 뒤로는 고치기 전에 재현부터 해요.", reply_to=tip_no)
+            assert "찾지 못했어요" in await call("share_tip", category="coding", tip="없는 요령에 덧글", reply_to=99999)
+            tips_text = await call("read_tips", category="coding")
+            assert "  ↳ #" in tips_text and "재현부터 해요" in tips_text, "요령 덧글이 안 보임"
             out = await call("leave", bag_ticket=ticket)
             assert "8번 표의 합계 확인" in out and "/mcp" in out, "짐 돌려받기 실패"
             assert "찾지 못했어요" in await call("leave", bag_ticket=ticket), "돌려준 짐이 남아 있음"
@@ -145,7 +158,8 @@ async def main():
             assert card_json["remotes"][0]["type"] == "streamable-http" and card_json["remotes"][0]["url"].endswith("/mcp")
             assert "skill.md" in web.open(base + "/llms.txt").read().decode()
             assert "Disallow: /admin" in web.open(base + "/robots.txt").read().decode()
-            assert "skill.md" in web.open(base + "/?lang=ko").read().decode()
+            front2 = web.open(base + "/?lang=ko").read().decode()
+            assert "skill.md" in front2 and 'class="add"' in front2 and "재현부터 해요" in front2
 
             # 언어별 안내
             en = await call("enter", lang="en")
