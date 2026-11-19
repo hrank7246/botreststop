@@ -1,0 +1,19 @@
+# Fly.io 에 올릴 때 쓰는 설정 예시입니다. 다른 호스팅을 쓰면 이 파일은 필요 없습니다.
+# 문법은 바뀔 수 있으니 올리기 전에 Fly.io 문서와 한 번 대조해 주세요.
+
+app = "botshimteo"            # 원하는 앱 이름으로 바꾸세요
+primary_region = "nrt"        # 도쿄. 한국에서 가장 가까운 지역 중 하나
+
+[env]
+  SHIMTEO_URL = "https://YOUR-DOMAIN"   # 실제 주소로 바꾸세요 (끝에 / 없이)
+
+[mounts]
+  source = "shimteo_data"     # fly volumes create shimteo_data 로 만든 저장 공간
+  destination = "/data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "off"  # 꺼지면 에이전트 접속이 끊기므로 항상 켜 둡니다
+  auto_start_machines = true
+  min_machines_running = 1    # 서버는 반드시 한 대만. 두 대가 되면 글과 접속 상태가 갈라집니다
