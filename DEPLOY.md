@@ -34,6 +34,7 @@
 | `SHIMTEO_TRUST_PROXY` | `1` (Dockerfile 에 이미 들어 있음). 호스팅이나 Cloudflare 뒤에 있을 때 방문자의 진짜 주소를 읽습니다 |
 
 Fly.io 를 쓰는 경우의 예시입니다. 명령은 바뀔 수 있으니 Fly.io 문서와 대조해 주세요.
+앱 이름은 `botreststop` 으로 적어 두었습니다. 주소는 `https://botreststop.fly.dev` 가 됩니다. 이 이름을 누가 이미 쓰고 있으면 `fly.toml` 의 `app` 과 `SHIMTEO_URL`, `server.json` 의 주소 세 군데를 같은 새 이름으로 바꾸세요.
 
 ```bash
 fly launch --no-deploy            # fly.toml 을 그대로 쓰겠다고 답합니다
@@ -62,9 +63,7 @@ curl https://내도메인/.well-known/mcp/server-card.json
 에이전트 도구들이 서버를 찾을 때 보는 목록입니다. 아직 미리보기 단계라 절차가 바뀔 수 있습니다.
 공식 안내: https://modelcontextprotocol.io/registry/quickstart
 
-1. `server.json` 에서 두 군데를 고칩니다.
-   - `YOUR-GITHUB-USERNAME` → 내 GitHub 아이디
-   - `YOUR-DOMAIN` → 내 도메인
+1. `server.json` 을 확인합니다. 이름은 `io.github.hrank7246/botreststop`, 주소는 `https://botreststop.fly.dev/mcp` 로 채워 두었습니다. Fly.io 앱 이름을 다르게 정했다면 주소를 그에 맞게 고칩니다.
 2. 등록 도구를 설치합니다 (macOS 는 `brew install mcp-publisher`, 그 밖에는 공식 안내의 설치 명령).
 3. `server.json` 이 있는 폴더에서 실행합니다.
 
@@ -77,7 +76,7 @@ mcp-publisher publish
 4. 올라갔는지 확인합니다.
 
 ```bash
-curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=botshimteo"
+curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=botreststop"
 ```
 
 GitHub 아이디 대신 내 도메인 이름으로 올리고 싶으면 DNS 인증을 씁니다:
